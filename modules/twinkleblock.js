@@ -134,6 +134,7 @@ Twinkle.block.callback.change_action = function twinkleblockCallbackChangeAction
 	Twinkle.block.callback.saveFieldset($('[name=field_block_options]'));
 	Twinkle.block.callback.saveFieldset($('[name=field_template_options]'));
 
+	// FIXME: just make 'generic block' the default
 	if ($form.find('[name=actiontype][value=block]').is(':checked')) {
 		field_preset = new Morebits.quickForm.element({ type: 'field', label: 'Preset', name: 'field_preset' });
 		field_preset.append({
@@ -373,6 +374,7 @@ Twinkle.block.callback.change_action = function twinkleblockCallbackChangeAction
  *   pageParam: <set if the associated block template accepts a page parameter>
  *   prependReason: <string - prepends the value of 'reason' to the end of the existing reason, namely for when revoking talk page access>
  *   nocreate: <block account creation from the user's IP (for anonymous users only)>
+ *   noTemplate: <boolean - unchecks 'add block template to user talk page' when this preset is chosen
  *   nonstandard: <template does not conform to stewardship of WikiProject User Warnings and may not accept standard parameters>
  *   reason: <string - block rationale, as would appear in the block log,
  *            and the edit summary for when adding block template, unless 'summary' is set>
@@ -442,6 +444,19 @@ Twinkle.block.blockPresetsInfo = {
 		nonstandard: true,
 		reason: '{{colocationwebhost}}',
 		sig: null
+	},
+	'lta' : {
+		autoblock: true,
+		expiry: 'infinity',
+		forRegisteredOnly: true,
+		nocreate: true,
+		noTemplate: true
+	},
+	'lta-anon' : {
+		expiry: '31 hours',
+		forAnonOnly: true,
+		nocreate: true,
+		noTemplate: true
 	},
 	'oversightblock' : {
 		nonstandard: true,
@@ -609,6 +624,7 @@ Twinkle.block.blockPresetsInfo = {
 		autoblock: true,
 		expiry: '24 hours',
 		nocreate: true,
+		pageParam: true,
 		reason: '[[WP:Edit warring|Edit warring]]',
 		summary: 'You have been blocked from editing to prevent further [[WP:DE|disruption]] caused by your engagement in an [[WP:EW|edit war]]'
 	},
@@ -770,6 +786,9 @@ Twinkle.block.transformBlockPresets = function twinkleblockTransformBlockPresets
 	});
 };
 
+// These are the groups of presets and defines the order in which they appear. For each list item:
+//   label: <string, the description that will be visible in the dropdown>
+//	 value: <string, the key of a preset in blockPresetsInfo
 Twinkle.block.blockGroups = [
 	{
 		label: 'Common block reasons',
@@ -778,8 +797,9 @@ Twinkle.block.blockGroups = [
 			{ label: 'anonblock - likely a school', value: 'anonblock - school' },
 			{ label: 'school block', value: 'school block' },
 			{ label: 'Generic block (custom reason)', value: 'uw-block' },
-			{ label: 'Generic block (custom reason) – IP', value: 'uw-ablock' },
-			{ label: 'Generic block (custom reason) – indefinite', value: 'uw-blockindef' },
+			{ label: 'Generic block (custom reason) - IP', value: 'uw-ablock' },
+			{ label: 'Generic block (custom reason) - indefinite', value: 'uw-blockindef' },
+			{ label: 'Disruptive editing', value: 'uw-disruptblock' },
 			{ label: 'Not here to contribute to the encyclopedia', value: 'uw-nothereblock' },
 			{ label: 'Vandalism', value: 'uw-vblock' },
 			{ label: 'Vandalism-only account', value: 'uw-voablock' }
@@ -790,17 +810,18 @@ Twinkle.block.blockGroups = [
 		list: [
 			{ label: 'Advertising', value: 'uw-adblock' },
 			{ label: 'Arbitration enforcement', value: 'uw-aeblock' },
-			{ label: 'Block evasion – IP', value: 'uw-ipevadeblock' },
+			{ label: 'Block evasion - IP', value: 'uw-ipevadeblock' },
 			{ label: 'BLP violations', value: 'uw-bioblock' },
 			{ label: 'Copyright violations', value: 'uw-copyrightblock' },
 			{ label: 'Creating inappropriate pages', value: 'uw-npblock' },
-			{ label: 'Disruptive editing', value: 'uw-disruptblock' },
 			{ label: 'Edit filter-related', value: 'uw-efblock' },
 			{ label: 'Edit warring', value: 'uw-ewblock' },
 			{ label: 'Generic block with talk page access revoked', value: 'uw-blocknotalk' },
 			{ label: 'Harassment', value: 'uw-hblock' },
 			{ label: 'Inappropriate use of user talk page while blocked', value: 'blocked talk-revoked-notice' },
 			{ label: 'Legal threats', value: 'uw-lblock' },
+			{ label: 'Long-term abuse', value: 'lta' },
+			{ label: 'Long-term abuse - IP', value: 'lta-anon' },
 			{ label: 'Personal attacks or harassment', value: 'uw-aoablock' },
 			{ label: 'Possible compromised account', value: 'uw-compblock' },
 			{ label: 'Removal of content', value: 'uw-dblock' },

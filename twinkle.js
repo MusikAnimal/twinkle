@@ -397,6 +397,7 @@ Twinkle.load = function () {
 	// Don't activate on special pages other than "Contributions" so that they load faster, especially the watchlist.
 	var isSpecialPage = ( mw.config.get('wgNamespaceNumber') === -1 &&
 		mw.config.get('wgCanonicalSpecialPageName') !== "Contributions" &&
+		mw.config.get('wgCanonicalSpecialPageName') !== "ComparePages" &&
 		mw.config.get('wgCanonicalSpecialPageName') !== "Prefixindex" ),
 
 		// Also, Twinkle is incompatible with Internet Explorer versions 8 or lower, so don't load there either.
